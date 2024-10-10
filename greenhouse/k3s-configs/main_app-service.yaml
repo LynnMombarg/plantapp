@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose-windows-amd64.exe convert
+    kompose.version: 1.34.0 (cbf2835db)
+  labels:
+    io.kompose.service: main-app
+  name: main-app
+spec:
+  type: LoadBalancer
+  ports:
+    - name: "5005"
+      port: 5005
+      targetPort: 5000
+  selector:
+    io.kompose.service: main-app

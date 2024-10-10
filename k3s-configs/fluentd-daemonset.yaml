@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  annotations:
+    kompose.cmd: kompose-windows-amd64.exe convert
+    kompose.version: 1.34.0 (cbf2835db)
+  labels:
+    io.kompose.service: fluentd
+  name: fluentd
+spec:
+  selector:
+    matchLabels:
+      io.kompose.service: fluentd
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose-windows-amd64.exe convert
+        kompose.version: 1.34.0 (cbf2835db)
+      labels:
+        io.kompose.service: fluentd
+    spec:
+      containers:
+        - args:
+            - fluentd
+            - -v
+            - -p
+            - /fluentd/plugins
+          env:
+            - name: FLUENTD_CONF
+              value: fluentd.conf
+          image: grafana/fluent-plugin-loki:main
+          name: fluentd
+          volumeMounts:
+            - mountPath: /fluentd/etc/fluentd.conf
+              name: fluentd-cm0
+              subPath: fluentd.conf
+      restartPolicy: Always
+      volumes:
+        - configMap:
+            items:
+              - key: fluentd.conf
+                path: fluentd.conf
+            name: fluentd-cm0
+          name: fluentd-cm0
